@@ -1,0 +1,60 @@
+{
+  "module": "basic-lambda",
+  "variables": {
+    "function_name": "marvin-lambda-fn",
+    "runtime": "python3.9",
+    "handler": "lambda_function.lambda_handler",
+    "memory_size": 256,
+    "timeout": 15,
+    "environment_variables": {
+      "LOG_LEVEL": "info",
+      "STAGE": "dev"
+    },
+    "log_retention_days": 14,
+    "default_tags": {
+      "Environment": "Test",
+      "Owner": "marvin.stewart"
+    },
+    "filename": null,
+    "s3_bucket": "marvin-lambda-artifacts",
+    "s3_key": "lambda.zip",
+    "source_code_hash": null,
+    "enable_deny": true,
+    "deny_actions": ["s3:DeleteObject"],
+    "role_name": "lambda-execution-role",
+    "policy_resources": ["arn:aws:s3:::marvin-data/*"],
+    "policy_actions": ["s3:GetObject", "s3:PutObject"],
+    "assumed_by_service": "lambda.amazonaws.com",
+    "deny_resources": ["arn:aws:s3:::marvin-data/private/*"],
+    "policy_name": "lambda-access-policy",
+    "source_file": "src/lambda_function.py",
+    "output_path": "build/lambda.zip",
+    "deploy_via_s3": true,
+    "log_group_name": "/aws/lambda/marvin-lambda-fn",
+    "log_stream_name": "stream-01",
+    "instance_id": "i-0123456789abcdef0",
+    "application": "marvin-app",
+    "metric_filter_name": "ErrorFilter"
+  },
+  "provider": {
+    "aws": {
+      "region": "us-east-1",
+      "version": "~> 5.0"
+    }
+  },
+  "expected_outputs": {
+    "lambda_arn": "string",
+    "lambda_name": "string",
+    "log_group_name": "string",
+    "lambda_role_arn": "string",
+    "lambda_function_url": "string",
+    "log_stream_name": "string"
+  },
+  "meta": {
+    "required_version": ">= 1.12.2"
+  },
+  "state": {
+    "backend": "local",
+    "path": "./terraform.tfstate"
+  }
+}
