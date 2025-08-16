@@ -1,0 +1,35 @@
+policy_resources = [ "arn:aws:s3:::marvin-data/*" ]
+application = "marvin-app"
+log_stream_name = "stream-01"
+source_code_hash = null
+memory_size = 256
+deny_actions = [ "s3:DeleteObject" ]
+policy_name = "lambda-access-policy"
+handler = "lambda_function.lambda_handler"
+source_file = "src/lambda_function.py"
+assumed_by_service = "lambda.amazonaws.com"
+s3_bucket = "marvin-lambda-artifacts"
+metric_filter_name = "ErrorFilter"
+policy_actions = [ "s3:GetObject", "s3:PutObject" ]
+kms_key_id = "placeholder"  # placeholder auto-generated
+environment_variables =         {
+  LOG_LEVEL = "info"
+  STAGE = "dev"
+}
+output_path = "build/lambda.zip"
+deploy_via_s3 = true
+filename = null
+function_name = "marvin-lambda-fn"
+s3_key = "lambda.zip"
+enable_deny = true
+log_retention_days = 14
+runtime = "python3.9"
+timeout = 15
+log_group_name = "/aws/lambda/marvin-lambda-fn"
+deny_resources = [ "arn:aws:s3:::marvin-data/private/*" ]
+role_name = "lambda-execution-role"
+default_tags =         {
+  Environment = "Test"
+  Owner = "marvin.stewart"
+}
+instance_id = "i-0123456789abcdef0"

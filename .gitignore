@@ -1,0 +1,26 @@
+# Local Terraform state
+*.tfstate
+*.tfstate.*
+
+# Crash logs
+crash.log
+
+# Local overrides
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# CLI configuration
+.terraform/
+.terraformrc
+terraform.rc
+
+# Test artifacts
+zz_test_tags.tf
+*.tfplan
+
+# OS/editor junk
+.DS_Store
+Thumbs.db
+*.swp
