@@ -1,49 +1,66 @@
-module "iam_roles" {
-  source             = "../iam/roles"
-  role_name          = var.role_name
-  assumed_by_service = var.assumed_by_service
-  default_tags       = var.default_tags
+# --- IAM Role & Policy (optional) ---
+resource "aws_iam_role" "lambda_role" {
+  count = var.create_role ? 1 : 0
+
+  name = var.role_name != null ? var.role_name : "${var.function_name}-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Principal = {
+        Service = var.assumed_by_service
+      }
+    }]
+  })
+
+  tags = merge(var.default_tags, var.tags)
 }
 
-module "iam_policies" {
-  source           = "../iam/policies"
-  policy_name      = var.policy_name
-  policy_actions   = var.policy_actions
-  policy_resources = var.policy_resources
-  deny_resources   = var.deny_resources
-  deny_actions     = var.deny_actions
-  enable_deny      = var.enable_deny
-  default_tags     = var.default_tags
+resource "aws_iam_policy" "lambda_policy" {
+  count = var.create_role && length(var.policy_actions) > 0 ? 1 : 0
+
+  name = "${var.function_name}-policy"
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Effect   = "Allow"
+      Action   = var.policy_actions
+      Resource = var.policy_resources
+    }]
+  })
+
+  tags = merge(var.default_tags, var.tags)
 }
 
-module "cloud_watch" {
-  source             = "../cloud_watch"
-  log_group_name     = var.log_group_name
-  log_stream_name    = var.log_stream_name
-  instance_id        = var.instance_id
-  metric_filter_name = var.metric_filter_name
-  default_tags       = var.default_tags
-  kms_key_id         = var.kms_key_id
+resource "aws_iam_role_policy_attachment" "lambda_attach" {
+  count = var.create_role && length(var.policy_actions) > 0 ? 1 : 0
+
+  role       = aws_iam_role.lambda_role[0].name
+  policy_arn = aws_iam_policy.lambda_policy[0].arn
 }
 
-# ✅ Only create the archive if using local deployment
+# --- Package Lambda code if local ---
 data "archive_file" "lambda" {
-  count       = var.deploy_via_s3 ? 0 : 1 # Conditional creation
+  count       = var.deploy_via_s3 ? 0 : 1
   type        = "zip"
   source_file = var.source_file
   output_path = var.output_path
 }
 
+# --- CloudWatch Log Group ---
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name              = "/aws/lambda/${var.function_name}"
   retention_in_days = var.log_retention_days
   kms_key_id        = var.kms_key_id
+  tags              = merge(var.default_tags, var.tags)
 }
 
-
+# --- Lambda Function ---
 resource "aws_lambda_function" "lambda" {
   function_name = var.function_name
-  role          = module.iam_roles.role_arn
+  role          = var.create_role ? aws_iam_role.lambda_role[0].arn : var.role_arn
   handler       = var.handler
   runtime       = var.runtime
   memory_size   = var.memory_size
@@ -55,17 +72,12 @@ resource "aws_lambda_function" "lambda" {
   source_code_hash = var.deploy_via_s3 ? var.source_code_hash : data.archive_file.lambda[0].output_base64sha256
 
   environment {
-    variables = merge(
-      var.environment_variables,
-      {
-        log_group_name     = module.cloud_watch.log_group_name
-        log_stream_name    = module.cloud_watch.log_stream_name
-        metric_filter_name = module.cloud_watch.metric_filter_name
-      }
-    )
+    variables = var.environment_variables
   }
 
   tracing_config {
-    mode = "Active" # ✅ Enables AWS X-Ray tracing
+    mode = "Active"
   }
+
+  tags = merge(var.default_tags, var.tags)
 }

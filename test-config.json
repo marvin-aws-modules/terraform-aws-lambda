@@ -13,7 +13,7 @@
     "log_retention_days": 14,
     "default_tags": {
       "Environment": "Test",
-      "Owner": "marvin.stewart"
+      "Owner": "marvin"
     },
     "filename": null,
     "s3_bucket": "marvin-lambda-artifacts",

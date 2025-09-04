@@ -15,7 +15,7 @@ log_retention_days = 14
 default_tags = {
   Environment = "dev"
   Project     = "basic-lambda"
-  Owner       = "marvin.stewart"
+  Owner       = "marvin"
 }
 
 s3_bucket        = "lambda-deployment-bucket"

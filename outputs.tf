@@ -8,21 +8,20 @@ output "lambda_name" {
   value       = aws_lambda_function.lambda.function_name
 }
 
-
 output "log_group_name" {
-  value = module.cloudwatch.log_group_name # Uses log group from CloudWatch module
+  description = "Name of the CloudWatch log group for the Lambda"
+  value       = aws_cloudwatch_log_group.lambda_logs.name
 }
 
 output "lambda_role_arn" {
   description = "IAM role assigned to the Lambda function"
-  value       = module.iam.role_arn
+  value       = var.create_role ? aws_iam_role.lambda_role[0].arn : var.role_arn
 }
 
-output "lambda_function_url" {
-  description = "URL endpoint of the Lambda function"
-  value       = aws_lambda_function.lambda.invoke_url
-}
-
-output "log_stream_name" {
-  value = module.cloudwatch.log_stream_name
-}
+# Only include this if you actually create a Lambda Function URL
+# resource "aws_lambda_function_url" "lambda_url" { ... }
+# Then:
+# output "lambda_function_url" {
+#   description = "URL endpoint of the Lambda function"
+#   value       = aws_lambda_function_url.lambda_url.function_url
+# }
