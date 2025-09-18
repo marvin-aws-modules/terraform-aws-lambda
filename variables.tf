@@ -39,7 +39,7 @@ variable "deploy_via_s3" {
 variable "source_file" {
   description = "Path to local source file for packaging"
   type        = string
-  default     = "lambda_function.py"
+  default     = "index.py"
 }
 
 variable "output_path" {
