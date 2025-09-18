@@ -168,21 +168,13 @@ module "basic-lambda" {
   s3_key                = var.s3_key
   kms_key_id            = var.kms_key_id
   source_code_hash      = var.source_code_hash
-  enable_deny           = var.enable_deny
-  deny_actions          = var.deny_actions
   role_name             = var.role_name
   policy_resources      = var.policy_resources
   policy_actions        = var.policy_actions
   assumed_by_service    = var.assumed_by_service
-  deny_resources        = var.deny_resources
-  policy_name           = var.policy_name
   source_file           = var.source_file
   output_path           = var.output_path
   deploy_via_s3         = var.deploy_via_s3
-  log_group_name        = var.log_group_name
-  log_stream_name       = var.log_stream_name
-  instance_id           = var.instance_id
-  metric_filter_name    = var.metric_filter_name
 }
 
 output "lambda_arn" {
