@@ -52,7 +52,7 @@ No modules.
 | <a name="input_s3_bucket"></a> [s3\_bucket](#input\_s3\_bucket) | S3 bucket name for deployment package | `string` | `null` | no |
 | <a name="input_s3_key"></a> [s3\_key](#input\_s3\_key) | S3 key for deployment package | `string` | `null` | no |
 | <a name="input_source_code_hash"></a> [source\_code\_hash](#input\_source\_code\_hash) | Base64-encoded SHA256 hash of the deployment package | `string` | `null` | no |
-| <a name="input_source_file"></a> [source\_file](#input\_source\_file) | Path to local source file for packaging | `string` | `"lambda_function.py"` | no |
+| <a name="input_source_file"></a> [source\_file](#input\_source\_file) | Path to local source file for packaging | `string` | `"index.py"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Optional tags to override or extend default\_tags | `map(string)` | `{}` | no |
 | <a name="input_timeout"></a> [timeout](#input\_timeout) | Function execution timeout in seconds | `number` | `3` | no |
 
